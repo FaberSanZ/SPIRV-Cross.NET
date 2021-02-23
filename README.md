@@ -1,2 +1,1 @@
-# Shaderc.NET
-shaderc 
+SPIRV-Cross
