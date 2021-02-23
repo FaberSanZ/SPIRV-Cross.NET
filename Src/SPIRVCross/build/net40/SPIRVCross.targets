@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_SPIRVCross_IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</_SPIRVCross_IsWindows>
+    <_SPIRVCross_IsMacOS Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</_SPIRVCross_IsMacOS>
+    <_SPIRVCross_IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</_SPIRVCross_IsLinux>
+
+    <_SPIRVCross_NativeRuntime Condition=" '$(_PIRVCross_NativeRuntime)' == '' And '$(_SPIRVCross_IsMacOS)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">osx-x64</_SPIRVCross_NativeRuntime>
+    <_SPIRVCross_NativeRuntime Condition=" '$(_PIRVCross_NativeRuntime)' == '' And '$(_SPIRVCross_IsLinux)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">linux-x64</_SPIRVCross_NativeRuntime>
+    <_SPIRVCross_NativeRuntime Condition=" '$(_PIRVCross_NativeRuntime)' == '' And '$(_SPIRVCross_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'true' Or '$(PlatformTarget)' == 'x86')">win-x86</_SPIRVCross_NativeRuntime>
+    <_SPIRVCross_NativeRuntime Condition=" '$(_PIRVCross_NativeRuntime)' == '' And '$(_SPIRVCross_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_SPIRVCross_NativeRuntime>
+
+    <_SPIRVCross_NativeLibName Condition="'$(_SPIRVCross_NativeRuntime)' == 'win-x86' Or '$(_SPIRVCross_NativeRuntime)' == 'win-x64'">cspirv_cross.dll</_SPIRVCross_NativeLibName>
+    <_SPIRVCross_NativeLibName Condition="'$(_SPIRVCross_NativeRuntime)' == 'osx-x64'">libcspirv_cross.dylib</_SPIRVCross_NativeLibName>
+    <_SPIRVCross_NativeLibName Condition="'$(_SPIRVCross_NativeRuntime)' == 'linux-x64'">libcspirv_cross.so</_SPIRVCross_NativeLibName>
+  </PropertyGroup>
+
+</Project>

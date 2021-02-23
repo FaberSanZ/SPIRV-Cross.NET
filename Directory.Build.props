@@ -4,24 +4,22 @@
     <RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
     <BinDir>$(RepositoryRootDirectory)bin</BinDir>
     <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(BinDir)\$(MSBuildProjectName)\</BaseOutputPath>
-    <LangVersion>9.0</LangVersion>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591;CS1701</NoWarn>
 
-    <PackageTags>gamedev Direct3D DirectX Direct3D12 Vulkan</PackageTags>
+    <PackageTags>gamedev Vulkan</PackageTags>
     <Company>FaberSanZ</Company>
     <Authors>Faber Leonardo</Authors>
     <Copyright>Copyright © 2020-2021 Faber Leonardo and contributors.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/FaberSanZ/Shaderc.NET</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/FaberSanZ/SPIRVCross.NET</PackageProjectUrl>
 
     <IncludeSymbols>false</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <!-- Packages versions -->
     <NerdbankGitVersioningVersion>3.3.37</NerdbankGitVersioningVersion>
-    <SharpGenVersion>1.2.1</SharpGenVersion>
   </PropertyGroup>
 </Project>

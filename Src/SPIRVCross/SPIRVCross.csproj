@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageId>SPIRVCross.NET</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/FaberSanZ/SPIRV-Cross.NET</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)native\win-x86\cspirv_cross.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>      
+      <PackagePath>runtimes/win-x86/native</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    
+    <Content Include="$(MSBuildThisFileDirectory)native\win-x64\cspirv_cross.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>runtimes/win-x64/native</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    
+    <Content Include="$(MSBuildThisFileDirectory)native\linux-x64\libcspirv_cross.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>      
+      <PackagePath>runtimes/linux-x64/native/libcspirv_cross.so</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    
+    <Content Include="$(MSBuildThisFileDirectory)native\osx-x64\libcspirv_cross.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>      
+      <PackagePath>runtimes/osx-x64/native/libcspirv_cross.dylib</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    
+  </ItemGroup>
+  
+  
+  
+
+</Project>
