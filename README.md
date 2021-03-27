@@ -1,1 +1,1 @@
-SPIRV-Cross
+SPIRV-Cross.Net
