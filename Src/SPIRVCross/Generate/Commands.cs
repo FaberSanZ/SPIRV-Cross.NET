@@ -12,35 +12,10 @@ using System.Runtime.InteropServices;
 
 namespace SPIRVCross
 {
-	public static unsafe partial class SPIRV
+	public unsafe partial class SPIRV
 	{
-
-		private static readonly IntPtr s_NativeLibrary = LoadNativeLibrary();
-
-
-		private static T LoadFunction<T>(string name) => LibraryLoader.LoadFunction<T>(s_NativeLibrary, name);
-
-
-		private static IntPtr LoadNativeLibrary()
-		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				return LibraryLoader.LoadLocalLibrary("spirv-cross-c-shared.dll");
-			}
-			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-			{
-				return LibraryLoader.LoadLocalLibrary("libshaderc_shared.so");
-			}
-			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-			{
-				return LibraryLoader.LoadLocalLibrary("libshaderc_shared.dylib");
-			}
-			else
-			{
-				return LibraryLoader.LoadLocalLibrary("cspirv_cross");
-			}
-		}
-
+		internal static IntPtr s_NativeLibrary = LoadNativeLibrary();
+		internal static T LoadFunction<T>(string name) => LibraryLoader.LoadFunction<T>(s_NativeLibrary, name);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void  PFN_spvc_get_version(uint* major, uint* minor, uint* patch);
 		private static readonly PFN_spvc_get_version spvc_get_version_ = LoadFunction<PFN_spvc_get_version>(nameof(spvc_get_version));

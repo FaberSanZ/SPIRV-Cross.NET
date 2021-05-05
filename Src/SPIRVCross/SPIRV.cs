@@ -4,6 +4,34 @@ using System.Runtime.InteropServices;
 
 namespace SPIRVCross
 {
+    public static unsafe partial class SPIRV
+    {
+
+
+
+
+        internal static IntPtr LoadNativeLibrary()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return LibraryLoader.LoadLocalLibrary("spirv-cross-c-shared.dll");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return LibraryLoader.LoadLocalLibrary("spirv-cross-c-shared.so");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return LibraryLoader.LoadLocalLibrary("spirv-cross-c-shared.dylib");
+            }
+            else
+            {
+                return LibraryLoader.LoadLocalLibrary("spirv-cross-c-shared");
+            }
+        }
+    }
+
+
 
     internal static class LibraryLoader
     {

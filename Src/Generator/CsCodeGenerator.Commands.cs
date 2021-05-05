@@ -18,40 +18,6 @@ namespace Generator
 
         };
 
-        private static string GetFunctionPointerSignature(bool netstandard, CppFunction function, bool allowNonBlittable = true)
-        {
-            bool canUseOut = s_outReturnFunctions.Contains(function.Name);
-
-            StringBuilder builder = new();
-            foreach (CppParameter parameter in function.Parameters)
-            {
-                string paramCsType = GetCsTypeName(parameter.Type, false);
-
-                if (canUseOut &&
-                    CanBeUsedAsOutput(parameter.Type, out CppTypeDeclaration? cppTypeDeclaration))
-                {
-                    builder.Append("out ");
-                    paramCsType = GetCsTypeName(cppTypeDeclaration, false);
-                }
-
-                builder.Append(paramCsType).Append(", ");
-            }
-
-            string returnCsName = GetCsTypeName(function.ReturnType, false);
-            if (!allowNonBlittable)
-            {
-
-            }
-
-            builder.Append(returnCsName);
-
-            if (netstandard)
-            {
-                return $"delegate* unmanaged[Stdcall]<{builder}>";
-            }
-
-            return $"delegate* unmanaged<{builder}>";
-        }
 
         private static void GenerateCommands(CppCompilation compilation, string outputPath)
         {
@@ -69,7 +35,6 @@ namespace Generator
                 string? returnType = GetCsTypeName(cppFunction.ReturnType, false);
                 bool canUseOut = s_outReturnFunctions.Contains(cppFunction.Name);
                 string? csName = cppFunction.Name;
-                string? argumentsString = GetParameterSignature(cppFunction, canUseOut);
 
                 commands.Add(csName, cppFunction);
 
@@ -88,14 +53,12 @@ namespace Generator
 
             using (writer.PushBlock($"public unsafe partial class SPIRV"))
             {
+                writer.WriteLine("internal static IntPtr s_NativeLibrary = LoadNativeLibrary();");
+                writer.WriteLine("internal static T LoadFunction<T>(string name) => LibraryLoader.LoadFunction<T>(s_NativeLibrary, name);");
+
                 foreach (KeyValuePair<string, CppFunction> command in commands)
                 {
                     CppFunction cppFunction = command.Value;
-
-
-                    string functionPointerSignatureNS = GetFunctionPointerSignature(true, cppFunction);
-                    string functionPointerSignature = GetFunctionPointerSignature(false, cppFunction);
-
 
 
                     string returnCsName = GetCsTypeName(cppFunction.ReturnType, false);

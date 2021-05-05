@@ -28,8 +28,7 @@ namespace Generator
 
         private static readonly HashSet<string> s_preserveCaps = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "khr",
-
+            "",
         };
 
         public static void GenerateEnums(CppCompilation compilation, string outputPath)

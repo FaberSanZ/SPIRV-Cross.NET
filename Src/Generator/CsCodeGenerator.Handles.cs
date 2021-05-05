@@ -16,11 +16,6 @@ namespace Generator
 
             foreach (CppTypedef typedef in compilation.Typedefs)
             {
-                if (typedef.Name.StartsWith("PFN_"))
-                {
-                    continue;
-                }
-
                 if (!(typedef.ElementType is CppPointerType))
                 {
                     continue;
