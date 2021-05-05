@@ -9,8 +9,7 @@
 <hr>
 
 [![NuGet](https://img.shields.io/nuget/v/SPIRVCross.NET.svg)](https://www.nuget.org/packages/SPIRVCross.NET/)
-[![License: MIT](https://github.com/FaberSanZ/SPIRV-Cross.NET/blob/main/LICENSE)
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/FaberSanZ/SPIRV-Cross.NET/blob/main/LICENSE)
 The code is licensed under MIT. Feel free to use it for whatever purpose.
 
 <hr>
