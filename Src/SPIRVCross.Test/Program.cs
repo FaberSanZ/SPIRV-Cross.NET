@@ -1,16 +1,40 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using SharpSPIRVCross;
+using SPIRVCross;
+using static SPIRVCross.SPIRV;
 using Vortice.ShaderCompiler;
+using System.Text;
 
 namespace SPIRVCross.Test
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static unsafe void Main(string[] args)
         {
+
+            static int GetMaxByteCount(string? value)
+            {
+                return value == null
+                    ? 0
+                    : Encoding.UTF8.GetMaxByteCount(value.Length + 1); // +1 for null-terminator.
+            }
+
+            string GetString(byte* ptr)
+            {
+                int length = 0;
+                while (length < 4096 && ptr[length] != 0)
+                {
+                    length++;
+                }
+
+                // Decode UTF-8 bytes to string.
+                return Encoding.UTF8.GetString(ptr, length);
+            }
+
 
 
             Options _options = new();
@@ -18,78 +42,62 @@ namespace SPIRVCross.Test
 
             using Vortice.ShaderCompiler.Compiler compilerfile = new(_options);
 
-            var result = compilerfile.Compile(File.ReadAllText("Shaders/lighting.frag"), string.Empty, ShaderKind.VertexShader);
+            var result = compilerfile.Compile(File.ReadAllText("Shaders/lighting.frag"), string.Empty, ShaderKind.FragmentShader);
 
             byte[] bytecode = result.GetBytecode().ToArray();
 
-            using (Context context = new Context())
+            SpvId* spirv;
+
+            fixed (byte* ptr = bytecode)
+                spirv = (SpvId*)ptr;
+
+            uint word_count = (uint)bytecode.Length / 4;
+
+
+
+            spvc_context context = default;
+            spvc_parsed_ir ir;
+            spvc_compiler compiler_glsl;
+            spvc_compiler_options options;
+            spvc_resources resources;
+            spvc_reflected_resource* list = default;
+            byte* result_ = null;
+            nuint count = default;
+            uint i;
+
+
+            // Create context.
+            spvc_context_create(&context);
+
+
+            spvc_error_callback error_callback = default;
+            // Set debug callback.
+            spvc_context_set_error_callback(context, error_callback, null);
+
+            // Parse the SPIR-V.
+            spvc_context_parse_spirv(context, spirv, word_count, &ir);
+            // Hand it off to a compiler instance and give it ownership of the IR.
+            spvc_context_create_compiler(context, spvc_backend.Glsl, ir, spvc_capture_mode.TakeOwnership, &compiler_glsl);
+
+            // Do some basic reflection.
+            spvc_compiler_create_shader_resources(compiler_glsl, &resources);
+            spvc_resources_get_resource_list_for_type(resources, spvc_resource_type.UniformBuffer, (spvc_reflected_resource*)&list, &count);
+
+            for (i = 0; i < count; i++)
             {
-                //Assert.NotNull(context);
-                ParseIr ir = context.ParseIr(bytecode);
-                SharpSPIRVCross.Compiler compiler = context.CreateCompiler(Backend.GLSL, ir);
+                Console.WriteLine("ID: {0}, BaseTypeID: {1}, TypeID: {2}, Name: {3}", list[i].id, list[i].base_type_id, list[i].type_id, GetString(list[i].name));
 
-                SpvCapability[] caps = compiler.GetDeclaredCapabilities();
-                string[] extensions = compiler.GetDeclaredExtensions();
-                ShaderResources resources = compiler.CreateShaderResources();
+                uint set = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationDescriptorSet);
+                Console.WriteLine($"Set: {set}");
 
-                Console.WriteLine(compiler.ExecutionModel);
-
-                foreach (ReflectedResource uniformBuffer in resources.GetResources(ResourceType.PushConstant))
-                {
-                    Console.WriteLine($"ID: {uniformBuffer.Id}, BaseTypeID: {uniformBuffer.BaseTypeId}, TypeID: {uniformBuffer.TypeId}, Name: {uniformBuffer.Name})");
-                    uint set = compiler.GetDecoration(uniformBuffer.Id, SpvDecoration.DescriptorSet);
-                    uint binding = compiler.GetDecoration(uniformBuffer.Id, SpvDecoration.Binding);
-                    int size = 0;
-                    SpirvType type = compiler.GetSpirvType(uniformBuffer.TypeId);
-                    compiler.GetDeclaredStructSize(type, out size);
-                    Console.WriteLine($"  Set: {set}, Binding: {binding}, size {size} = {Marshal.SizeOf<Matrix4x4>()}");
-                }
+                uint binding = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationBinding);
+                Console.WriteLine($"Binding: {binding}");
 
 
-                foreach (ReflectedResource uniformBuffer in resources.GetResources(ResourceType.SubpassInput))
-                {
-                    Console.WriteLine($"ID: {uniformBuffer.Id}, BaseTypeID: {uniformBuffer.BaseTypeId}, TypeID: {uniformBuffer.TypeId}, Name: {uniformBuffer.Name})");
-                    uint set = compiler.GetDecoration(uniformBuffer.Id, SpvDecoration.DescriptorSet);
-                    uint binding = compiler.GetDecoration(uniformBuffer.Id, SpvDecoration.Binding);
-                    Console.WriteLine($"  Set: {set}, Binding: {binding}");
-                }
-
-
-                foreach (ReflectedResource uniformBuffer in resources.GetResources(ResourceType.UniformBuffer))
-                {
-                    Console.WriteLine($"ID: {uniformBuffer.Id}, BaseTypeID: {uniformBuffer.BaseTypeId}, TypeID: {uniformBuffer.TypeId}, Name: {uniformBuffer.Name})");
-                    uint set = compiler.GetDecoration(uniformBuffer.Id, SpvDecoration.DescriptorSet);
-                    uint binding = compiler.GetDecoration(uniformBuffer.Id, SpvDecoration.Binding);
-                    Console.WriteLine($"  Set: {set}, Binding: {binding}");
-                }
-
-
-
-
-
-                foreach (ReflectedResource input in resources.GetResources(ResourceType.StageInput))
-                {
-                    Console.WriteLine($"ID: {input.Id}, BaseTypeID: {input.BaseTypeId}, TypeID: {input.TypeId}, Name: {input.Name})");
-                    uint location = compiler.GetDecoration(input.Id, SpvDecoration.Location);
-                    Console.WriteLine($"  Location: {location}");
-                }
-
-                foreach (ReflectedResource sampledImage in resources.GetResources(ResourceType.SampledImage))
-                {
-
-                    Console.WriteLine($"ID: {sampledImage.Id}, BaseTypeID: {sampledImage.BaseTypeId}, TypeID: {sampledImage.TypeId}, Name: {sampledImage.Name})");
-
-                    uint set = compiler.GetDecoration(sampledImage.Id, SpvDecoration.DescriptorSet);
-                    uint binding = compiler.GetDecoration(sampledImage.Id, SpvDecoration.Binding);
-                    SpirvType type = compiler.GetSpirvType(sampledImage.TypeId);
-                    
-
-                    Console.WriteLine($"  Set: {set}, Binding: {binding}");
-                }
-
-                compiler.Options.SetOption(CompilerOption.HLSL_ShaderModel, 50);
-                string hlsl_source = compiler.Compile();
+                Console.WriteLine("=========");
             }
+
+
         }
     }
 }

@@ -1,7 +1,9 @@
 #version 450
 
-layout (location = 0) in vec3 inPos;
-layout (location = 1) in vec3 inColor;
+#extension GL_ARB_separate_shader_objects : enable
+
+
+layout(binding = 1) uniform sampler2D texSampler;
 
 layout (binding = 0) uniform UBO 
 {
@@ -10,21 +12,21 @@ layout (binding = 0) uniform UBO
 	mat4 projectionMatrix;
 } ubo;
 
-layout (location = 0) out vec3 outColor;
 
-out gl_PerVertex 
+layout (binding = 2) uniform DATA 
 {
-    vec4 gl_Position;   
-};
+	mat4 model;
+} data;
 
+layout(location = 0) in vec3 fragColor;
+layout(location = 1) in vec2 fragTexCoord;
 
-layout(push_constant) uniform PushConsts {
-    mat4 model;
-} primitive;
+layout(location = 0) out vec4 outColor;
 
-
-void main() 
-{
-	outColor = inColor;
-	gl_Position = ubo.projectionMatrix * ubo.viewMatrix * (ubo.modelMatrix * primitive.model) * vec4(inPos.xyz, 1.0);
+void main() {
+    outColor = texture(texSampler, fragTexCoord);
 }
+
+
+
+

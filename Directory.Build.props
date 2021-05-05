@@ -5,16 +5,21 @@
     <BinDir>$(RepositoryRootDirectory)bin</BinDir>
     <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(BinDir)\$(MSBuildProjectName)\</BaseOutputPath>
 
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+
+
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591;CS1701</NoWarn>
 
     <PackageTags>gamedev Vulkan</PackageTags>
-    <Company>FaberSanZ</Company>
+    <Company>FakzSoft</Company>
     <Authors>Faber Leonardo</Authors>
-    <Copyright>Copyright © 2020-2021 Faber Leonardo and contributors.</Copyright>
+    <Copyright>Copyright © 2020-2021 FakzSoft and contributors.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageProjectUrl>https://github.com/FaberSanZ/SPIRVCross.NET</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/FakzSoft/SPIRV-Cross.NET</PackageProjectUrl>
 
     <IncludeSymbols>false</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
