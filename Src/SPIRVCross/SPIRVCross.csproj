@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)native\win-x86\cspirv_cross.dll">
+    <Content Include="$(MSBuildThisFileDirectory)native\win-x86\spirv-cross-c-shared.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <PackagePath>runtimes/win-x86/native</PackagePath>
       <Pack>true</Pack>
@@ -30,15 +30,22 @@
       <Pack>true</Pack>
     </Content>
 
-    <Content Include="$(MSBuildThisFileDirectory)native\linux-x64\libcspirv_cross.so">
+    
+
+
+    <Content Include="$(MSBuildThisFileDirectory)native\linux-x64\libspirv-cross-c-shared.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackagePath>runtimes/linux-x64/native/libcspirv_cross.so</PackagePath>
+      <PackagePath>runtimes/linux-x64/native</PackagePath>
       <Pack>true</Pack>
     </Content>
 
-    <Content Include="$(MSBuildThisFileDirectory)native\osx-x64\libcspirv_cross.dylib">
+    
+
+
+
+    <Content Include="$(MSBuildThisFileDirectory)native\osx-x64\libspirv-cross-c-shared.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PackagePath>runtimes/osx-x64/native/libcspirv_cross.dylib</PackagePath>
+      <PackagePath>runtimes/osx-x64/native</PackagePath>
       <Pack>true</Pack>
     </Content>
 

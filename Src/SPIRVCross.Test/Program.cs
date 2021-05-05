@@ -16,13 +16,6 @@ namespace SPIRVCross.Test
         private static unsafe void Main(string[] args)
         {
 
-            static int GetMaxByteCount(string? value)
-            {
-                return value == null
-                    ? 0
-                    : Encoding.UTF8.GetMaxByteCount(value.Length + 1); // +1 for null-terminator.
-            }
-
             string GetString(byte* ptr)
             {
                 int length = 0;
