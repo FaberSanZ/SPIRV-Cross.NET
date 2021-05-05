@@ -51,8 +51,6 @@ namespace Generator
                 return 0;
             }
 
- 
-
             CsCodeGenerator.Generate(compilation, outputPath);
             return 0;
         }

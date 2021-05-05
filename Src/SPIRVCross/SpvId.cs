@@ -8,9 +8,9 @@ namespace SPIRVCross
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public readonly partial struct SpvId : IEquatable<SpvId>
     {
-        public SpvId(byte value) => this.Value = value;
+        public SpvId(uint value) => this.Value = value;
 
-        public readonly byte Value;
+        public readonly uint Value;
 
         public bool Equals(SpvId other) => Value.Equals(other.Value);
 
@@ -22,7 +22,7 @@ namespace SPIRVCross
 
         public static implicit operator uint(SpvId from) => from.Value;
 
-        public static implicit operator SpvId(byte from) => new SpvId(from);
+        public static implicit operator SpvId(uint from) => new SpvId(from);
 
         public static bool operator ==(SpvId left, SpvId right) => left.Equals(right);
 
