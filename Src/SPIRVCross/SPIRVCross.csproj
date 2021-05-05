@@ -5,6 +5,9 @@
     <PackageId>SPIRVCross.NET</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/FaberSanZ/SPIRV-Cross.NET</PackageProjectUrl>
+    <Version>1.1.0</Version>
+    <Company>Faber Leonardo</Company>
+    <Copyright>Copyright © 2020-2021Faber Leonardo and contributors.</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
