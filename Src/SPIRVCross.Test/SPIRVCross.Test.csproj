@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Vortice.Dxc" Version="1.9.56" />
     <PackageReference Include="Vortice.ShaderCompiler" Version="1.0.0" />
   </ItemGroup>
 
@@ -22,6 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Shaders\lighting.hlsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Shaders\lighting.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -8,6 +8,7 @@ using SPIRVCross;
 using static SPIRVCross.SPIRV;
 using Vortice.ShaderCompiler;
 using System.Text;
+using Vortice.Dxc;
 
 namespace SPIRVCross.Test
 {
@@ -34,7 +35,7 @@ namespace SPIRVCross.Test
 
             var result = compilerfile.Compile(File.ReadAllText("Shaders/lighting.frag"), string.Empty, ShaderKind.FragmentShader);
 
-            byte[] bytecode = result.GetBytecode().ToArray();
+            byte[] bytecode = CompileLibraryShader("Shaders/lighting.hlsl");
 
             SpvId* spirv;
 
@@ -66,27 +67,32 @@ namespace SPIRVCross.Test
             spvc_context_parse_spirv(context, spirv, word_count, &ir);
 
             // Hand it off to a compiler instance and give it ownership of the IR.
-            spvc_context_create_compiler(context, spvc_backend.Glsl, ir, spvc_capture_mode.TakeOwnership, &compiler_glsl);
+            spvc_context_create_compiler(context, spvc_backend.Hlsl, ir, spvc_capture_mode.TakeOwnership, &compiler_glsl);
 
             // Do some basic reflection.
             spvc_compiler_create_shader_resources(compiler_glsl, &resources);
             spvc_resources_get_resource_list_for_type(resources, spvc_resource_type.UniformBuffer, (spvc_reflected_resource*)&list, &count);
 
+
+            var model = spvc_compiler_get_execution_model(compiler_glsl);
+
+            Console.WriteLine(model);
+
             for (uint i = 0; i < count; i++)
             {
-                Console.WriteLine("ID: {0}, BaseTypeID: {1}, TypeID: {2}, Name: {3}", list[i].id, list[i].base_type_id, list[i].type_id, GetString(list[i].name));
+                //Console.WriteLine("ID: {0}, BaseTypeID: {1}, TypeID: {2}, Name: {3}", list[i].id, list[i].base_type_id, list[i].type_id, GetString(list[i].name));
 
-                uint set = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationDescriptorSet);
+                uint set = spvc_compiler_get_decoration(compiler_glsl, list[i].id, SpvDecoration.SpvDecorationDescriptorSet);
                 Console.WriteLine($"Set: {set}");
 
-                uint binding = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationBinding);
+                uint binding = spvc_compiler_get_decoration(compiler_glsl, list[i].id, SpvDecoration.SpvDecorationBinding);
                 Console.WriteLine($"Binding: {binding}");
 
 
                 Console.WriteLine("=========");
             }
             Console.WriteLine("\n \n");
-
+            //spvc_
 
             // Modify options.
             spvc_compiler_create_compiler_options(compiler_glsl, &options);
@@ -95,12 +101,48 @@ namespace SPIRVCross.Test
             spvc_compiler_install_compiler_options(compiler_glsl, options);
 
 
-            byte* r = default;
-            spvc_compiler_compile(compiler_glsl, (byte*)&r);
-            Console.WriteLine("Cross-compiled source: {0}", GetString(r));
+            //byte* r = default;
+            //spvc_compiler_compile(compiler_glsl, (byte*)&r);
+            //Console.WriteLine("Cross-compiled source: {0}", GetString(r));
 
             // Frees all memory we allocated so far.
             spvc_context_destroy(context);
+        }
+
+
+
+        private static byte[] CompileLibraryShader(string filePath)
+        {
+            string? source = File.ReadAllText(filePath);
+            var profile = "vs_6_0";
+            string[] args = new[]
+            {
+                "-spirv",
+                "-T", profile,
+                "-E", "main",
+                "-fspv-target-env=vulkan1.2",
+                "-fspv-extension=SPV_NV_ray_tracing",
+                "-fspv-extension=SPV_KHR_multiview",
+                "-fspv-extension=SPV_KHR_shader_draw_parameters",
+                "-fspv-extension=SPV_EXT_descriptor_indexing",
+
+            };
+            IDxcUtils utils = Dxc.CreateDxcUtils();
+            IDxcIncludeHandler handler = utils.CreateDefaultIncludeHandler();
+
+            var compiler = Dxc.CreateDxcCompiler3();
+
+            IDxcResult? result = compiler.Compile(source, args, handler);
+
+            if (result == null || result.GetStatus().Failure)
+            {
+                throw new Exception(result!.GetErrors());
+            }
+
+            byte[] data = result.GetObjectBytecodeArray();
+
+            result.Dispose();
+            return data;
         }
     }
 }
