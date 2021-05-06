@@ -40,7 +40,6 @@ string GetString(byte* ptr)
     return Encoding.UTF8.GetString(ptr, length);
 }
 
-
 byte[] bytecode = GetBytecode();
 
 SpvId* spirv;
@@ -50,18 +49,14 @@ fixed (byte* ptr = bytecode)
 
 uint word_count = (uint)bytecode.Length / 4;
 
-
-
 spvc_context context = default;
 spvc_parsed_ir ir;
 spvc_compiler compiler_glsl;
 spvc_compiler_options options;
 spvc_resources resources;
 spvc_reflected_resource* list = default;
-byte* result_ = null;
 nuint count = default;
 spvc_error_callback error_callback = default;
-
 
 // Create context.
 spvc_context_create(&context);
@@ -93,16 +88,15 @@ for (uint i = 0; i < count; i++)
 }
 Console.WriteLine("\n \n");
 
-
 // Modify options.
 spvc_compiler_create_compiler_options(compiler_glsl, &options);
 spvc_compiler_options_set_uint(options, spvc_compiler_option.GlslVersion, 450);
 spvc_compiler_options_set_bool(options, spvc_compiler_option.GlslEs, false);
 spvc_compiler_install_compiler_options(compiler_glsl, options);
 
-byte* r = default;
-spvc_compiler_compile(compiler_glsl, (byte*)&r);
-Console.WriteLine("Cross-compiled source: {0}", GetString(r));
+byte* result = default;
+spvc_compiler_compile(compiler_glsl, (byte*)&result);
+Console.WriteLine("Cross-compiled source: {0}", GetString(result));
 
 // Frees all memory we allocated so far.
 spvc_context_destroy(context);
