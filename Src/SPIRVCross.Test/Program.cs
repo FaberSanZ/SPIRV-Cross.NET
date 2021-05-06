@@ -127,12 +127,12 @@ namespace SPIRVCross.Test
                 "-fspv-extension=SPV_EXT_descriptor_indexing",
 
             };
-            IDxcUtils utils = Dxc.CreateDxcUtils();
-            IDxcIncludeHandler handler = utils.CreateDefaultIncludeHandler();
+            IDxcUtils? utils = Dxc.CreateDxcUtils();
+            IDxcIncludeHandler? handler = utils!.CreateDefaultIncludeHandler();
 
             var compiler = Dxc.CreateDxcCompiler3();
 
-            IDxcResult? result = compiler.Compile(source, args, handler);
+            IDxcResult? result = compiler?.Compile(source, args, handler);
 
             if (result == null || result.GetStatus().Failure)
             {

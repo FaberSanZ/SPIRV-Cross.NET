@@ -1,4 +1,9 @@
-﻿
+﻿// This code has been adapted from the sample repository "Vortice.Vulkan": https://github.com/amerkoleci/Vortice.Vulkan
+// Copyright (c) Amer Koleci y colaboradores.
+// Distribuido bajo la licencia MIT. Consulte el archivo LICENCIA en la raíz del proyecto para obtener más información.
+
+
+
 using System;
 using System.Collections.Generic;
 using System.IO;
