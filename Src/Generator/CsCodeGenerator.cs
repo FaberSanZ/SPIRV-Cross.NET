@@ -1,6 +1,7 @@
-﻿// This code has been adapted from the sample repository "Vortice.Vulkan": https://github.com/amerkoleci/Vortice.Vulkan
-// Copyright (c) Amer Koleci y colaboradores.
-// Distribuido bajo la licencia MIT. Consulte el archivo LICENCIA en la raíz del proyecto para obtener más información.
+﻿// This code has been based from the sample repository "Vortice.Vulkan": https://github.com/amerkoleci/Vortice.Vulkan
+// Copyright (c) Amer Koleci and contributors.
+// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
+// This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 
 
 

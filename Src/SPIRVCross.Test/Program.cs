@@ -33,8 +33,9 @@ namespace SPIRVCross.Test
 
             using Compiler compilerfile = new(_options);
 
-            var result = compilerfile.Compile(File.ReadAllText("Shaders/lighting.frag"), string.Empty, ShaderKind.FragmentShader);
+            var result = compilerfile.Compile(File.ReadAllText("Shaders/lighting.frag"), string.Empty, ShaderKind.VertexShader);
 
+            //byte[] bytecode = result.GetBytecode().ToArray();
             byte[] bytecode = CompileLibraryShader("Shaders/lighting.hlsl");
 
             SpvId* spirv;
@@ -71,7 +72,7 @@ namespace SPIRVCross.Test
 
             // Do some basic reflection.
             spvc_compiler_create_shader_resources(compiler_glsl, &resources);
-            spvc_resources_get_resource_list_for_type(resources, spvc_resource_type.UniformBuffer, (spvc_reflected_resource*)&list, &count);
+            spvc_resources_get_resource_list_for_type(resources, spvc_resource_type.PushConstant, (spvc_reflected_resource*)&list, &count);
 
 
             var model = spvc_compiler_get_execution_model(compiler_glsl);
@@ -80,13 +81,16 @@ namespace SPIRVCross.Test
 
             for (uint i = 0; i < count; i++)
             {
-                //Console.WriteLine("ID: {0}, BaseTypeID: {1}, TypeID: {2}, Name: {3}", list[i].id, list[i].base_type_id, list[i].type_id, GetString(list[i].name));
+                uint set = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationDescriptorSet);
+                uint binding = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationBinding);
+                uint offset = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationOffset);
+                spvc_type type = spvc_compiler_get_type_handle(compiler_glsl, (SpvId)list[i].type_id);
 
-                uint set = spvc_compiler_get_decoration(compiler_glsl, list[i].id, SpvDecoration.SpvDecorationDescriptorSet);
-                Console.WriteLine($"Set: {set}");
+                nuint size = 0;
+                spvc_compiler_get_declared_struct_size(compiler_glsl, type, &size);
 
-                uint binding = spvc_compiler_get_decoration(compiler_glsl, list[i].id, SpvDecoration.SpvDecorationBinding);
-                Console.WriteLine($"Binding: {binding}");
+
+                Console.WriteLine(size);
 
 
                 Console.WriteLine("=========");
@@ -96,8 +100,8 @@ namespace SPIRVCross.Test
 
             // Modify options.
             spvc_compiler_create_compiler_options(compiler_glsl, &options);
-            spvc_compiler_options_set_uint(options, spvc_compiler_option.GlslVersion, 450);
-            spvc_compiler_options_set_bool(options, spvc_compiler_option.GlslEs, false);
+            spvc_compiler_options_set_uint(options, spvc_compiler_option.HlslShaderModel, 51);
+            //spvc_compiler_options_set_bool(options, spvc_compiler_option.HlslShaderModel, true);
             spvc_compiler_install_compiler_options(compiler_glsl, options);
 
 
@@ -114,7 +118,7 @@ namespace SPIRVCross.Test
         private static byte[] CompileLibraryShader(string filePath)
         {
             string? source = File.ReadAllText(filePath);
-            var profile = "vs_6_0";
+            var profile = "hs_6_5";
             string[] args = new[]
             {
                 "-spirv",
