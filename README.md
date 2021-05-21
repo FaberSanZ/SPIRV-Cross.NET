@@ -15,6 +15,8 @@ The code is licensed under MIT. Feel free to use it for whatever purpose.
 
 <hr>
 
+Ideas and generator part is based on [Vortice.Vulkan](https://github.com/amerkoleci/Vortice.Vulkan)
+
 ## Overview
 SPIRV-Cross is a tool designed for parsing and converting SPIR-V to other shader languages.
 
