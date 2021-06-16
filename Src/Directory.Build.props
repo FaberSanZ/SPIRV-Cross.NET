@@ -6,7 +6,7 @@
     <BinDir>$(RepositoryRootDirectory)bin</BinDir>
     <BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(BinDir)\$(MSBuildProjectName)\</BaseOutputPath>
 
-
+    <LangVersion>9.0</LangVersion>
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
