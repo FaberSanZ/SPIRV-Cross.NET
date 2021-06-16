@@ -27,7 +27,6 @@ namespace SPIRVCross.Test
             }
 
 
-
             Options _options = new();
             _options.SetSourceLanguage(SourceLanguage.GLSL);
 
