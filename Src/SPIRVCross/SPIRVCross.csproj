@@ -1,22 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
     <PackageId>SPIRVCross.NET</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageProjectUrl>https://github.com/FaberSanZ/SPIRV-Cross.NET</PackageProjectUrl>
-    <Version>1.1.0</Version>
-    <Company>Faber Leonardo</Company>
-    <Copyright>Copyright © 2020-2021Faber Leonardo and contributors.</Copyright>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+  </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+
 
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)native\win-x86\spirv-cross-c-shared.dll">
@@ -49,6 +43,11 @@
     <Content Include="$(MSBuildThisFileDirectory)native\osx-x64\libspirv-cross-c-shared.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <PackagePath>runtimes/osx-x64/native</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+
+    <Content Include="build\netstandard2.0\SPIRVCross.targets">
+      <PackagePath>build/netstandard2.0/SPIRVCross.targetss</PackagePath>
       <Pack>true</Pack>
     </Content>
 
