@@ -47,7 +47,7 @@
     </Content>
 
     <Content Include="build\netstandard2.0\SPIRVCross.targets">
-      <PackagePath>build/netstandard2.0/SPIRVCross.targetss</PackagePath>
+      <PackagePath>build/netstandard2.0/SPIRVCross.targets</PackagePath>
       <Pack>true</Pack>
     </Content>
 
