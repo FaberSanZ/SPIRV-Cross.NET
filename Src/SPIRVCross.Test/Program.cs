@@ -35,7 +35,7 @@ namespace SPIRVCross.Test
 
             var result = compilerfile.Compile(File.ReadAllText("Shaders/lighting.frag"), string.Empty, ShaderKind.VertexShader);
 
-            //byte[] bytecode = result.GetBytecode().ToArray();
+            //Span<byte> bytecode = result.GetBytecode();
             byte[] bytecode = CompileLibraryShader("Shaders/lighting.hlsl");
 
             SpvId* spirv;
