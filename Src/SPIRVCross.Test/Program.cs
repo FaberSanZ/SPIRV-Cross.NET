@@ -77,7 +77,6 @@ namespace SPIRVCross.Test
             var model = spvc_compiler_get_execution_model(compiler_glsl);
 
             Console.WriteLine(model);
-
             for (uint i = 0; i < count; i++)
             {
                 uint set = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationDescriptorSet);
@@ -99,12 +98,12 @@ namespace SPIRVCross.Test
 
             // Modify options.
             spvc_compiler_create_compiler_options(compiler_glsl, &options);
-            spvc_compiler_options_set_uint(options, spvc_compiler_option.HlslShaderModel, 51);
-            //spvc_compiler_options_set_bool(options, spvc_compiler_option.HlslShaderModel, true);
+            //spvc_compiler_options_set_uint(options, spvc_compiler_option.HlslShaderModel, 51);
+            spvc_compiler_options_set_bool(options, spvc_compiler_option.HlslShaderModel, true);
             spvc_compiler_install_compiler_options(compiler_glsl, options);
 
 
-            //byte* r = default;
+            //byte* r = null;
             //spvc_compiler_compile(compiler_glsl, (byte*)&r);
             //Console.WriteLine("Cross-compiled source: {0}", GetString(r));
 
