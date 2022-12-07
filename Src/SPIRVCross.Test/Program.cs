@@ -77,6 +77,7 @@ namespace SPIRVCross.Test
             var model = spvc_compiler_get_execution_model(compiler_glsl);
 
             Console.WriteLine(model);
+
             for (uint i = 0; i < count; i++)
             {
                 uint set = spvc_compiler_get_decoration(compiler_glsl, (SpvId)list[i].id, SpvDecoration.SpvDecorationDescriptorSet);
